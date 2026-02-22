@@ -102,4 +102,139 @@ select * from esporte where numJogadores >= 4 and numJogadores <= 11;
 
 delete from esporte where id in (1,3,5);
 
-select * from esporte
+select * from esporte;
+
+/*Ex 3*/
+
+create database desenho;
+use desenho;
+
+create table animacao(
+	id int primary key auto_increment,
+	titulo varchar(50),
+    lancamento date,
+    EmissoraOriginal varchar(50),
+    classificacao int,
+    stts varchar(15),
+    nota decimal(2,1)
+) auto_increment = 10;
+
+alter table animacao add constraint chkLancamento check(lancamento <= '2026-02-21');
+alter table animacao add constraint chkClassificacao check(classificacao = 0 or classificacao = 10 or classificacao = 12 or classificacao = 14 or classificacao = 16 or classificacao = 18);
+alter table animacao add constraint chkNota check(nota >= 0 and nota <= 5);
+
+insert into animacao values 
+(default, 'Hora de aventura', '2010-04-05', 'Cartoon Network', 12, 'finalizado', 5.0),
+(default, 'apenas um show', '2010-09-06', 'Cartoon network', 12, 'finalizado', 5.0),
+(default, 'Coragem o cão covarde', '1999-11-12', 'Cartoon network', 10, 'finalizado', 3.5),
+(default, 'Du, Dudu e Edu', '1999-01-04', 'Cartoon network', 10, 'finalizado', 3.5);
+
+select * from animacao;
+
+select * from animacao where classificacao <= 14;
+
+select * from animacao where emissoraOriginal = 'Cartoon network';
+
+alter table animacao add constraint chkStatus check(stts = 'exibindo' or stts = 'finalizado' or stts = 'cancelado');
+
+update animacao set stts = 'finalizado' where id = 1; 
+update animacao set stts = 'finalizado' where id = 2;
+
+delete from animacao where id = 12;
+
+select * from animacao where titulo like 'h%';
+
+alter table animacao drop constraint chkClassificacao;
+
+alter table animacao rename column classificacao to classificacaoIndicativa;
+
+alter table animacao add constraint chkClassificacao check(classificacaoIndicativa = 0 or classificacaoIndicativa= 10 or classificacaoIndicativa= 12 or classificacaoIndicativa = 14 or classificacaoIndicativa= 16 or classificacaoIndicativa= 18);
+
+update animacao set lancamento = '2026-02-21', nota = 1 where id = 11;
+
+truncate animacao;
+
+alter table animacao drop constraint chkStatus;
+
+/*Ex 4*/
+
+create database estoque;
+use estoque;
+
+create table MisteriosSA(
+ id int primary key,
+ nome varchar(50),
+ dtCompra date,
+ preco decimal(6,2),
+ peso int,
+ dtRetirada date
+);
+
+select * from misteriossa;
+
+insert into misteriossa values
+(1, 'Caixa Misteriosa Pequena', '2026-01-10', 89.90, 2000, null),
+(2, 'Kit Enigma Premium', '2026-01-15', 199.50, 5000, null),
+(3, 'Pacote Surpresa Gold', '2026-01-20', 349.99, 8000, null),
+(4, 'Maleta Secreta Deluxe', '2026-02-01', 499.00, 12000, null),
+(5, 'Biscoito Scooby', '2026-02-05', 129.75, 3000, null);
+
+select nome, dtCompra, dtRetirada, id from misteriossa order by dtcompra;
+
+update misteriossa set dtRetirada = now() where nome = 'Biscoito Scooby';
+
+alter table  misteriossa rename column id to idComida;
+
+update misteriossa set nome = 'Biscoito Scooby' where idComida = 1;
+update misteriossa set nome = 'Cachorro-quente' where idComida = 2;
+update misteriossa set nome = 'Biscoito Scooby' where idComida = 3;
+update misteriossa set nome = 'Cachorro-quente' where idComida = 4;
+update misteriossa set nome = 'Biscoito Scooby' where idComida = 5;
+
+alter table misteriossa add constraint chkNome check(nome = 'Biscoito Scooby' or nome = 'Cachorro-quente');
+
+select idComida, nome, dtCompra as 'data da compra', preco, peso, dtRetirada as 'data da retirada' from misteriossa;
+
+select * from misteriossa where dtCompra < '2024-06-25';
+
+select * from misteriossa where preco >= 30.50;
+
+truncate misteriossa;
+
+/*Ex 5*/
+
+create database vingadores;
+use vingadores;
+
+create table heroi(
+	id int primary key auto_increment,
+    nome varchar(45),
+    versao varchar(45),
+    habilidade varchar(45) unique not null,
+    altura int
+);
+
+insert into heroi values
+(default, 'Homem-Aranha', 'Homem-Aranha: Sem Volta Para Casa', 'Sentido Aranha', 178),
+(default, 'Batman', 'Batman: O Cavaleiro das Trevas', 'Intelecto Estratégico', 188),
+(default, 'Superman', 'O Homem de Aço', 'Super Força', 191),
+(default, 'Mulher-Maravilha', 'Mulher-Maravilha', 'Laço da Verdade', 183),
+(default, 'Flash', 'The Flash', 'Super Velocidade', 180);
+
+alter table heroi add column regeneracao boolean;
+
+alter table heroi modify column versao varchar(100);
+
+delete from heroi where id = 3;
+
+insert into heroi values (default, 'tarzan', 'Tarzan', 'Pendurar em arvores', 190, false);
+
+select * from heroi where nome like 'H%' or nome like 'C%';
+
+select * from heroi where nome not like '%a%';
+
+select nome from heroi where altura > 190;
+
+select * from heroi where altura > 180 order by nome desc;
+
+truncate heroi;
